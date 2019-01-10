@@ -2,7 +2,6 @@ const { Vector3, Vector4, Matrix4 } = require('matrixgl');
 const GLPower = require('./GLPower')
 
 const drawFrag = require('../shader/drawFrag.glsl');
-
 const renderVert = require('../shader/renderVert.glsl');
 const renderFrag = require('../shader/renderFrag.glsl');
 
