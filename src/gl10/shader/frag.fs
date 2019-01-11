@@ -160,24 +160,41 @@ vec3 loop(vec3 p,float s){
 }
 
 vec3 fold(vec3 p){
-    p.xy *= rotate(exp(-mod(time * 10.0,6.0)));
-    p.xz *= rotate(exp(-mod(time * 10.0,8.0)));
-    for(int i = 0; i < 20; i++){
-        p.zy = abs(p.zy);
-        p.xy *= rotate(time * 0.23);
-        p.xz = abs(p.xz);
-        p.xz *= rotate(time * 0.3);
+    vec3 pos = p;
+    vec3 shift = vec3(.93,.96,.9);
+    vec3 rot = vec3(3.12,3.34,2.23);
+
+    for ( int i = 0; i < 4; i ++ ) {
+        float intensity = pow( 2.0, -float( i ) );
+    
+        pos.y -= 0.0;
+    
+        pos = abs( pos ) - shift * intensity;
+        shift.yz *= rotate(rot.x);
+        pos.zx *= rotate(time * 0.5);
+        shift.xy *= rotate(rot.z);
+    
+        if ( pos.x < pos.y ) { pos.xy = pos.yx; }
+        if ( pos.x < pos.z ) { pos.xz = pos.zx; }
+        if ( pos.y < pos.z ) { pos.yz = pos.zy; }
     }
-    return p;
+
+    return pos;
 }
 
 float distance(vec3 p){
+    vec3 pos = p;
+    vec3 pos2 = p;
     float d;
-    p = loop(p,8.0);
-    p = fold(p);
-    d = sdBox(p - vec3(0.0,0.0,0.0),vec3(1.0,1.0,1.0) * 1.2);
+    float d2;
 
-    return d;
+    pos.xz *= rotate(time);
+    pos.xy *= rotate(time);
+    pos = fold(pos);
+    d = sdBox(pos,vec3(1.0));
+    d2 = sdSphere(pos2 + vec3(sin(time * 40.0),cos(time * 60.0),0.0) * (sin(time * 2.0) * 0.05 + sin(time * 4.0) * 0.05 ) ,0.3);
+
+    return min(d,d2);
 }
 
 vec3 getNormal(vec3 p,float d){
@@ -191,44 +208,46 @@ vec3 getNormal(vec3 p,float d){
     return normalize(result);
 }
 
+vec3 light_specular(vec3 c,vec3 light,vec3 normal,float m){
+    float norm_factor = ( m + 2.0 ) / ( 2.0 * PI );
+    vec3 indensity = c * norm_factor * vec3(1.0) * pow( max( 0.0, dot( normal, light ) ), m );
+    return indensity;
+}
+
 void main(void)
 {
     const float angle = 60.0;
     const float fov = angle * 0.5 * PI / 180.0;
-    vec3 cPos = vec3(0.0,0.0,5.0)+ vec3(0.0,0.0,-time * 10.0);
-
+    vec3 cPos = vec3(0.0,0.0,6.0); // + vec3(0.0,0.0,-time * 10.0);
 
     vec2 uv = (gl_FragCoord.xy * 2.0  - resolution ) / min(resolution.x,resolution.y);
     vec3 ray = normalize(vec3(sin(fov) * uv.x,sin(fov) * uv.y,-1.0));
-    ray.xz *= rotate(snoise(time * 0.5 + 303.0) * 0.1);
-    ray.yz *= rotate(snoise(time * 0.4 ) * 0.1);
-    ray.xy *= rotate(snoise(time * 0.4 + 990.9) * 0.1);
+
+    //camera rotation
 
     float rDistance = 0.0;
     float rLen = 0.0;
     vec3 p = cPos;
     vec3 c = vec3(0.0);
-    float light = 0.0;
 
     for(int i = 0; i < 64; i++){
         rDistance = distance(p);
         rLen += rDistance;
-        light += max(0.0,1.0 - rDistance) * .03;
         p = cPos + ray * rLen;
     }
 
     if(abs(rDistance) <= 0.01){
-        vec3 normal = getNormal(p,0.001);
-        float diff = clamp(dot(vec3(0.5,0.5,0.5), normal), 0.1, 1.0);
-        
-        vec3 edge = vec3(length(normal - getNormal(p, 0.09)) * max(0.0,sin(rLen + time * 10.0)) * 10.0);
-        edge.x += sin(rLen) * 0.7;
-        
-        c = vec3(edge + diff * (1.0 - max(0.0,(rLen * 0.03))));
+        vec3 normal = getNormal(p,0.1);
+        vec3 lightPos = normalize(vec3(sin(time * 0.0),0.4,cos(time * 0.0)));
+        float diff = clamp(dot(lightPos, normal), 0.1, 1.0);
+        float white = smoothstep(0.0,0.1,1.0 - length(p) * 2.9);
+
+        c = (vec3(.8,.1,.1) * (1.0 - white)) * normal.z * diff + light_specular(c + 0.5,lightPos,normal,100.0);
     }else{
-        c = vec3(0.0,0.0,0.0);
+        c = vec3(.3);
     }
 
+    c *= 1.0 - length(uv.xy) * 0.35;
     
     gl_FragColor = vec4(c,1.0);
 }
