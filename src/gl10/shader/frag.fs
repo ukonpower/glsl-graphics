@@ -178,7 +178,6 @@ vec3 fold(vec3 p){
         if ( pos.x < pos.z ) { pos.xz = pos.zx; }
         if ( pos.y < pos.z ) { pos.yz = pos.zy; }
     }
-
     return pos;
 }
 
@@ -218,12 +217,10 @@ void main(void)
 {
     const float angle = 60.0;
     const float fov = angle * 0.5 * PI / 180.0;
-    vec3 cPos = vec3(0.0,0.0,6.0); // + vec3(0.0,0.0,-time * 10.0);
+    vec3 cPos = vec3(0.0,0.0,6.0);
 
     vec2 uv = (gl_FragCoord.xy * 2.0  - resolution ) / min(resolution.x,resolution.y);
     vec3 ray = normalize(vec3(sin(fov) * uv.x,sin(fov) * uv.y,-1.0));
-
-    //camera rotation
 
     float rDistance = 0.0;
     float rLen = 0.0;
@@ -240,9 +237,9 @@ void main(void)
         vec3 normal = getNormal(p,0.1);
         vec3 lightPos = normalize(vec3(sin(time * 0.0),0.4,cos(time * 0.0)));
         float diff = clamp(dot(lightPos, normal), 0.1, 1.0);
-        float white = smoothstep(0.0,0.1,1.0 - length(p) * 2.9);
+        float colW = smoothstep(0.0,0.1,1.0 - length(p) * 2.9);
 
-        c = (vec3(.8,.1,.1) * (1.0 - white)) * normal.z * diff + light_specular(c + 0.5,lightPos,normal,100.0);
+        c = (vec3(.8,.1,.1) * (1.0 - colW)) * normal.z * diff + light_specular(c + 0.5,lightPos,normal,100.0);
     }else{
         c = vec3(.3);
     }
