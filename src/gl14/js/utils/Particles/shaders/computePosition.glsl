@@ -1,6 +1,3 @@
-uniform vec3 start;
-uniform bool shot;
-
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
 

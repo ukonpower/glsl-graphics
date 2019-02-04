@@ -1,5 +1,3 @@
-#include <common>
-uniform vec2 mouse;
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex 
 //               noise functions.

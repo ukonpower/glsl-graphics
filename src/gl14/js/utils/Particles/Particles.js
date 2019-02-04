@@ -32,44 +32,34 @@ export default class Particles{
         }
 
         this.initComputeRenderer();
-        this.initParticles();
+        this.createParticleObj();
     }
 
     initComputeRenderer(){
+        //computeRendererの初期化
         this.computeRenderer = new GPUComputationRenderer(this.computeTextureWidth,this.computeTextureWidth,this.renderer);
         
+        //テクスチャを作成
         let initPositionTex = this.computeRenderer.createTexture();
         let initVelocityTex = this.computeRenderer.createTexture();
 
+        //各テクスチャを初期化
         this.initPosition(initPositionTex);
         this.initVelocity(initVelocityTex);
-    
+
+        //computeRendererに各テクスチャとそれに対応するシェーダーを登録する
         this.comTexs.position.texture = this.computeRenderer.addVariable("texturePosition",comShaderPosition,initPositionTex);
         this.comTexs.velocity.texture = this.computeRenderer.addVariable("textureVelocity",comShaderVelocity,initVelocityTex);
 
+        //uniformを登録
         this.computeRenderer.setVariableDependencies( this.comTexs.position.texture, [ this.comTexs.position.texture, this.comTexs.velocity.texture] );
         this.comTexs.position.uniforms = this.comTexs.position.texture.material.uniforms;
-        this.comTexs.position.uniforms.start =  { type:"v3", value : this.startPos};
-        this.comTexs.position.uniforms.mouse =  { type:"v2" , value : new THREE.Vector2(0,0)};
-        this.comTexs.position.uniforms.shot =  { type:"b" , value : false};
+        this.comTexs.position.uniforms.time =  { type:"v3", value : this.time};
 
         this.computeRenderer.setVariableDependencies( this.comTexs.velocity.texture, [ this.comTexs.position.texture, this.comTexs.velocity.texture] );  
         this.comTexs.velocity.uniforms = this.comTexs.velocity.texture.material.uniforms;
-        this.comTexs.velocity.uniforms.mouse =  { type:"v2", value : new THREE.Vector2(0,0)};
-        this.comTexs.velocity.uniforms.start =  { type:"v3", value : this.startPos};
 
         this.computeRenderer.init();
-    }
-
-    update(){
-        this.time += this.clock.getDelta();
-        this.comTexs.position.uniforms.start =  { type:"v3", value : this.startPos};
-        this.comTexs.velocity.uniforms.start =  { type:"v3", value : this.startPos};
-        this.comTexs.velocity.uniforms.goal =  { type:"v3", value : this.goalPos};
-
-        this.computeRenderer.compute();
-        this.uni.texturePosition.value = this.computeRenderer.getCurrentRenderTarget(this.comTexs.position.texture).texture;
-        this.uni.textureVelocity.value = this.computeRenderer.getCurrentRenderTarget(this.comTexs.velocity.texture).texture;
     }
 
     initPosition(tex){
@@ -93,7 +83,17 @@ export default class Particles{
         }
     }
 
-    initParticles(){
+    update(){
+        this.time += this.clock.getDelta();
+
+        //computeRendererを走らせる
+        this.computeRenderer.compute();
+
+        //パーティクルオブジェクトに送るテクスチャを更新
+        this.uni.texturePosition.value = this.computeRenderer.getCurrentRenderTarget(this.comTexs.position.texture).texture;
+    }
+
+    createParticleObj(){
         let geo = new THREE.BufferGeometry();
 
         //ジオメトリ初期化用の配列
@@ -116,8 +116,6 @@ export default class Particles{
 
         this.uni = {
             texturePosition : {value: null},
-            textureVelocity : {value: null},
-            textureTime : {value : null},
             cameraConstant: { value: 4.0},
             color:{ value: this.color},
         }
