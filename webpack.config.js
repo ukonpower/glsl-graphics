@@ -1,8 +1,8 @@
 const path = require('path');
-const project = 'gl14';
+const project = 'gl15';
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     entry: './src/' + project + '/js/main.js',
     output:{
 		path: `${__dirname}/dist/gl/js/`,
