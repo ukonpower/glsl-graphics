@@ -1,6 +1,7 @@
 import Cursor from './Cursor';
 import * as THREE from 'three';
-
+import GLTF2Loader from 'three-gltf2-loader'
+GLTF2Loader(THREE);
 window.THREE = THREE;
 
 export default class ThreeGraphic{
@@ -57,6 +58,7 @@ export default class ThreeGraphic{
         var width = window.innerWidth;
         var height = width * 9 / 16;
         this.renderer.setSize(width,height);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
         if(this.currentScene != null){
             this.currentScene.Resize(width,height);
         }

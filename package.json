@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "matrixgl": "^1.0.1"
+    "matrixgl": "^1.0.1",
+    "three": "^0.101.1",
+    "three-gltf2-loader": "^1.2.0"
   },
   "devDependencies": {
     "shader-loader": "^1.3.1",

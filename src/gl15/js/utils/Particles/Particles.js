@@ -118,6 +118,7 @@ export default class Particles{
             texturePosition : {value: null},
             cameraConstant: { value: 4.0},
             color:{ value: this.color},
+            width: {value: window.innerWidth * window.devicePixelRatio},
         }
 
         let mat = new THREE.ShaderMaterial({
