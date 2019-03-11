@@ -1,12 +1,11 @@
  import comShaderPosition from './shaders/computePosition.glsl';
 import comShaderVelocity from './shaders/computeVelocity.glsl';
-import frag from './shaders/boxTrails.fs';
+
 import vert from './shaders/boxTrails.vs';
 
 import GPUComputationRenderer from '../../plugins/GPUComputationRenderer';
 
 export default class boxTrails{
-
     constructor(renderer,num,length){
         this.renderer = renderer;
 
@@ -15,7 +14,6 @@ export default class boxTrails{
         this.length = length;
         
         this.obj;
-
         this.time = 0;
         this.clock = new THREE.Clock();
 
@@ -51,13 +49,14 @@ export default class boxTrails{
         this.computeRenderer.setVariableDependencies( this.comTexs.velocity.texture, [ this.comTexs.position.texture, this.comTexs.velocity.texture] );  
         this.comTexs.velocity.uniforms = this.comTexs.velocity.texture.material.uniforms;
         this.comTexs.velocity.uniforms.time =  { type:"f", value : 0};
+        this.comTexs.velocity.uniforms.seed =  { type:"f", value : Math.random() * 100};
 
         this.computeRenderer.init();
     }
 
     initPosition(tex){
         var texArray = tex.image.data;
-        let range = new THREE.Vector3(10,10,10);
+        let range = new THREE.Vector3(25,25,25);
         for(var i = 0; i < texArray.length; i += this.length * 4){
             let x = Math.random() * range.x - range.x / 2;
             let y = Math.random() * range.y - range.y / 2;
@@ -76,12 +75,10 @@ export default class boxTrails{
 
         let posArray = [];
         let indexArray = [];
-        let normalArray = [];
         let uvArray = []; 
 
-        let r = .3;
-        let res = 4;
-        let space = 0.1;
+        let r = .1;
+        let res = 5;
         for(let i = 0; i < this.num; i++){
             for(let j = 0; j < this.length; j++){
                 let cNum = i * this.length + j;
@@ -90,49 +87,43 @@ export default class boxTrails{
                     let rad = Math.PI * 2 / res * k;
                     let x = Math.cos(rad) * r;
                     let y = Math.sin(rad) * r;
-                    let z = space * k;
+                    let z = j * 1.6;
+                    z = 0;
                     
                     posArray.push(x);
                     posArray.push(y);
                     posArray.push(z);
 
-                    let v = new THREE.Vector3(x,y,z);
-                    v = v.normalize();
-                    normalArray.push(v.x);
-                    normalArray.push(v.y);
-                    normalArray.push(v.z);
-    
                     uvArray.push(j / this.length);
                     uvArray.push(i / this.num);
     
-                    
-                    let maxIndex = this.length * res + this.length * res * i;
-                    // console.log(maxIndex);
-                    
-                    let c = cNum * 4 + k;
-                    
-                    console.log(c);
-                    
-                    indexArray.push(c);
-                    indexArray.push(Math.min(Math.max(0,c - res),maxIndex));
-                    indexArray.push(Math.min(Math.max(0,c - res + 1),maxIndex));
+                    let c = cNum * res + k;
+                    if(j > 0){
+                        indexArray.push(c);
+                        indexArray.push(((cNum - 1) * (res) + (k + 1) % res));
+                        indexArray.push((cNum * res + ((k + 1) % res) ));
+
+                        indexArray.push(c);
+                        indexArray.push(c - res);                        
+                        indexArray.push(((cNum - 1) * res + ((k + 1) % res)));
+                    }
                 }
             }
+
+            // let n = i * this.length;
+            // indexArray.push(n, n + 2, n + 1, n, n + 3, n + 2);
+
+            // n = (i + 1) * this.length * res - 1;            
+            // indexArray.push(n, n - 2, n - 1, n, n - 3, n - 2);
         }
 
         let pos = new Float32Array(posArray);
         let indices = new Uint32Array(indexArray);
         let uv = new Float32Array(uvArray);
-        let normal = new Float32Array(normalArray);
-
-        let max = this.length * this.n;
 
         geo.addAttribute('position', new THREE.BufferAttribute( pos, 3 ) );
-        geo.addAttribute('normal', new THREE.BufferAttribute( normal, 3 ) );
         geo.addAttribute('uv', new THREE.BufferAttribute( uv, 2 ) );
         geo.setIndex(new THREE.BufferAttribute(indices,1));
-
-        console.log(geo);
         
         let customUni = {
             texturePosition : {value: null},
@@ -146,10 +137,12 @@ export default class boxTrails{
         let mat = new THREE.ShaderMaterial({
             uniforms: this.uni,
             vertexShader: vert,
-            // fragmentShader: phong.fragmentShader,
-            fragmentShader: frag,
+            fragmentShader: phong.fragmentShader,
             lights:true,
+            flatShading: true,
+            side: THREE.DoubleSide
         });
+        
         this.obj = new THREE.Mesh(geo,mat);
         this.obj.matrixAutoUpdate = false;
         this.obj.updateMatrix();

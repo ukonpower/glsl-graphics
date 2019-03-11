@@ -10,6 +10,7 @@ export default class MainScene extends BaseScene {
         super(renderer);
         this.init();
         this.animate();
+        this.scene.background = new THREE.Color( 0x120012 );
     }
 
     init() {
@@ -17,20 +18,25 @@ export default class MainScene extends BaseScene {
         this.clock = new THREE.Clock();
         this.camera.position.set(0,1,3);
 
-        this.light = new THREE.DirectionalLight({color:0xffffff});
-        this.light.position.set(2,5,-2);
-        this.light.intensity = 2;
+        this.light = new THREE.PointLight();
+        this.light.color = new THREE.Color(0xff0044);
+        this.light.position.set(20,0,16);
+        this.light.intensity = 1;
         this.scene.add(this.light);
 
-        // this.alight = new THREE.AmbientLight({color:0xf});
-        // this.scene.add(this.alight);
+        this.light = new THREE.PointLight();
+        this.light.color = new THREE.Color(0x4400ff);
+        this.light.position.set(-20,0,16);
+        this.light.intensity = 1;
+        this.scene.add(this.light);
 
-        let bg = new THREE.BoxGeometry(1,1,1);
-        let bm = new THREE.MeshStandardMaterial();
-        this.box = new THREE.Mesh(bg,bm);
-        this.scene.add(this.box);
+        this.light = new THREE.PointLight();
+        this.light.color = new THREE.Color(0xffffff);
+        this.light.position.set(0,0,0);
+        this.light.intensity = 0.2;
+        this.scene.add(this.light);
 
-        this.bTrails = new BoxTrails(this.renderer,2,10);
+        this.bTrails = new BoxTrails(this.renderer,10000,10);
         this.scene.add(this.bTrails.obj);
 
         window.scene = this.scene;
@@ -41,8 +47,6 @@ export default class MainScene extends BaseScene {
 
         let r = 13;
         this.camera.position.set(Math.sin(this.time * 0.5) * r,0,Math.cos(this.time * 0.5) * r);
-        // this.camera.position.set(Math.sin(0) * r,0,Math.cos(0) * r);
-        // this.camera.position.set(15,0,0);
         this.camera.lookAt(0,0,0);
         this.bTrails.update();
 
