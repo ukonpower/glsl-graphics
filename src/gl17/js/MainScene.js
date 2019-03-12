@@ -33,10 +33,10 @@ export default class MainScene extends BaseScene {
         this.light = new THREE.PointLight();
         this.light.color = new THREE.Color(0xffffff);
         this.light.position.set(0,0,0);
-        this.light.intensity = 0.2;
+        this.light.intensity = 1.0;
         this.scene.add(this.light);
 
-        this.bTrails = new BoxTrails(this.renderer,10000,10);
+        this.bTrails = new BoxTrails(this.renderer,3000,10);
         this.scene.add(this.bTrails.obj);
 
         window.scene = this.scene;

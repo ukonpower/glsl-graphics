@@ -78,7 +78,7 @@ export default class boxTrails{
         let uvArray = []; 
 
         let r = .1;
-        let res = 5;
+        let res = 4;
         for(let i = 0; i < this.num; i++){
             for(let j = 0; j < this.length; j++){
                 let cNum = i * this.length + j;
@@ -124,7 +124,7 @@ export default class boxTrails{
         geo.addAttribute('position', new THREE.BufferAttribute( pos, 3 ) );
         geo.addAttribute('uv', new THREE.BufferAttribute( uv, 2 ) );
         geo.setIndex(new THREE.BufferAttribute(indices,1));
-        
+
         let customUni = {
             texturePosition : {value: null},
             textureVelocity : {value: null},

@@ -137,13 +137,13 @@ void main() {
     vec3 pos = texture2D( texturePosition, uv ).xyz;
     vec3 vel = texture2D( textureVelocity, uv ).xyz;
     float idParticle = uv.y * resolution.x + uv.x;
-    float scale = 0.06;
+    float scale = 0.1;
     vel.xyz += 40.0 * vec3(
       snoise( vec4( scale * pos.xyz, 7.225 * seed * 200.0 + 0.4 * time ) ),
       snoise( vec4( scale * pos.xyz, 3.553 * seed + 0.4 * time ) ),
       snoise( vec4( scale * pos.xyz, 1.259 * seed * 10.0 + 0.4 * time ) )
     ) * 0.05;
-    vel += -pos * length(pos) * 0.002;
+    vel += -pos * length(pos) * 0.005;
     vel.xyz *= 0.9 + abs(sin(uv.y * 9.0)) * 0.05;
 
     gl_FragColor = vec4( vel.xyz, 1.0 );
