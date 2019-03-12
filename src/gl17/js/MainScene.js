@@ -1,5 +1,5 @@
 import BaseScene from './utils/BaseScene';
-import BoxTrails from './utils/BoxTrails/BoxTrails';
+import Fish from './utils/Fish/Fish';
 
 import ppVert from './shaders/pp.vs';
 import ppFrag from './shaders/pp.fs';
@@ -36,8 +36,8 @@ export default class MainScene extends BaseScene {
         this.light.intensity = 1.0;
         this.scene.add(this.light);
 
-        this.bTrails = new BoxTrails(this.renderer,3000,10);
-        this.scene.add(this.bTrails.obj);
+        this.fish = new Fish(this.renderer,3000,10);
+        this.scene.add(this.fish.obj);
 
         window.scene = this.scene;
     }
@@ -48,7 +48,7 @@ export default class MainScene extends BaseScene {
         let r = 13;
         this.camera.position.set(Math.sin(this.time * 0.5) * r,0,Math.cos(this.time * 0.5) * r);
         this.camera.lookAt(0,0,0);
-        this.bTrails.update();
+        this.fish.update();
 
         this.renderer.render(this.scene,this.camera);
     }

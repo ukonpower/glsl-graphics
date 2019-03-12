@@ -1,11 +1,11 @@
  import comShaderPosition from './shaders/computePosition.glsl';
 import comShaderVelocity from './shaders/computeVelocity.glsl';
 
-import vert from './shaders/boxTrails.vs';
+import vert from './shaders/fish.vs';
 
 import GPUComputationRenderer from '../../plugins/GPUComputationRenderer';
 
-export default class boxTrails{
+export default class Fish{
     constructor(renderer,num,length){
         this.renderer = renderer;
 
