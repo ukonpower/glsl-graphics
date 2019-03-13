@@ -1,5 +1,5 @@
 const path = require('path');
-const project = 'gl17';
+const project = 'gl18';
 
 module.exports = {
     mode: 'production',
