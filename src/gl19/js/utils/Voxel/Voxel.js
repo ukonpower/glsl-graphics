@@ -157,6 +157,9 @@ export default class Voxel {
             },
             texturePosition: {
                 value: null
+            },
+            time: {
+                value: 0
             }
         }
 
@@ -191,6 +194,7 @@ export default class Voxel {
         
         this.uni.textureVelocity.value = this.computeRenderer.getCurrentRenderTarget(this.comTexs.velocity.texture).texture;
         this.uni.texturePosition.value = this.computeRenderer.getCurrentRenderTarget(this.comTexs.position.texture).texture;
+        this.uni.time.value = this.time;
         this.computeRenderer.compute();
     }
 }

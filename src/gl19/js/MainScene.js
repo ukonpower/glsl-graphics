@@ -42,7 +42,6 @@ export default class MainScene extends BaseScene {
         });
         planeMat.visible = false;
         this.plane = new THREE.Mesh(planeGeo,planeMat);
-        // this.plane.rotateY(Math.PI / 2);
         this.scene.add(this.plane);
         this.raycaster = new THREE.Raycaster();
         this.pointer = new THREE.Vector3(0,0,0);
@@ -79,7 +78,7 @@ export default class MainScene extends BaseScene {
     animate() {
         this.time += this.clock.getDelta();
 
-        let r = 10;
+        // let r = 15;
         // this.camera.position.set(Math.sin(this.time * 0.5) * r,2,Math.cos(this.time * 0.5) * r);
         this.camera.position.set(0,0,-15);
         this.camera.lookAt(0,0,0);
