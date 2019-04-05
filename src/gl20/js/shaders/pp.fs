@@ -6,15 +6,14 @@ varying vec2 vUv;
 void main() {
     vec2 uv = vUv;
     vec2 u = uv * 2.0 - 1.0;
-    vec2 uu = u + vec2(0.0,0.2);
+    vec2 uu = u + vec2(0.0,0.4);
     vec3 c;
 
-    float w = -max(.0,length(uu)) * 0.03;
+    float w = -max(.0,length(uu)) * 0.01;
     // w *= smoothstep(0.5,1.0,sin(10.0 * 15.0)) * 5.0;
     // w += .01;
 
     vec2 vig = uu * w;
-    vig *= abs(sin(time * 7.0) * 2.0);
 
     for(int i = 0; i < N; i++){
         vig *= 1.0 + (0.2 / float(N) * float(i));

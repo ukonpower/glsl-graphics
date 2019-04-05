@@ -16,7 +16,7 @@ export default class ThreeGraphic{
         });
         
         this.renderer.setSize(window.innerWidth,window.innerHeight);
-        this.renderer.setPixelRatio(1);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
 
         this.cursor = new Cursor();
         this.userAgent = navigator.userAgent;    
@@ -53,13 +53,15 @@ export default class ThreeGraphic{
     }
 
     onWindowResize(){
+        
         var width = window.innerWidth;
         var height = window.innerHeight;
         this.renderer.setSize(width,height);
 
         if(this.currentScene){
-            console.log("resize");
-            this.currentScene.Resize();
+
+        console.log("resize");
+            this.currentScene.Resize(width,height);
         }
     }
 

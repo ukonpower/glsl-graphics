@@ -1,5 +1,5 @@
 import BaseScene from './utils/BaseScene';
-import Voxel from './utils/Voxel/Voxel';
+import Background from './utils/Background';
 import Floor from './utils/Floor/Floor';
 
 import ppVert from './shaders/pp.vs';
@@ -12,6 +12,7 @@ export default class MainScene extends BaseScene {
     constructor(renderer) {
         super(renderer);
         this.init();
+        this.Resize();
         this.animate();
         this.scene.background = new THREE.Color( 0x120000 );
         this.renderer.shadowMap.enabled = true;
@@ -20,36 +21,41 @@ export default class MainScene extends BaseScene {
     init() {
         this.time = Math.random() * 100;
         this.clock = new THREE.Clock();
-        this.camera.position.set(0,1,3);
 
-        this.light = new THREE.PointLight();
+        this.light = new THREE.DirectionalLight();
         this.light.color = new THREE.Color(0xffffff);
-        this.light.position.set(0,0,0);
-        this.light.intensity = 1.0;
+        this.light.position.set(0,100,0);
+        this.light.intensity = 0.1;
         this.light.castShadow = true;
         this.scene.add(this.light);
 
-        this.light = new THREE.PointLight();
-        this.light.color = new THREE.Color(0xffffff);
-        this.light.position.set(0,0,-4);
-        this.light.intensity = 1.0;
-        this.light.castShadow = true;
-        this.scene.add(this.light);
+        this.alight = new THREE.AmbientLight();
+        this.alight.color = new THREE.Color(0xffffff);
+        this.alight.position.set(0,5,0);
+        this.alight.intensity = 0.9;
+        this.scene.add(this.alight);
 
-        var planeGeo = new THREE.PlaneGeometry(15,15,100);
-        var planeMat = new THREE.MeshNormalMaterial({
-            side: THREE.DoubleSide,
-        });
-        planeMat.visible = false;
-        this.plane = new THREE.Mesh(planeGeo,planeMat);
-        this.scene.add(this.plane);
-        this.raycaster = new THREE.Raycaster();
-        this.pointer = new THREE.Vector3(0,0,0);
+        this.floor = new Floor();
+        this.scene.add(this.floor.obj);
 
-        this.voxel = new Voxel(this.renderer,1,1,1,15);
-        this.scene.add(this.voxel.obj);
+        this.back = new Background();
+        this.scene.add(this.back.obj);
 
         let loader = new THREE.GLTFLoader();
+        this.cake;
+
+        loader.load('./models/happybirthday.glb', (gltf) => {
+            this.cake = gltf.scene;
+            this.cake.traverse((child) => {
+                if (child.isMesh) {
+                    child.receiveShadow = true;
+                }
+            });
+
+            this.cake.position.y = 0.5;
+            this.cake.scale.set(2.5,2.5,2.5);
+            this.scene.add(this.cake);     
+        });
 
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene,this.camera));
@@ -77,51 +83,45 @@ export default class MainScene extends BaseScene {
 
     animate() {
         this.time += this.clock.getDelta();
+        this.camera.position.set(Math.sin(this.time * 1.5) * this.r,10,Math.cos(this.time * 1.5) * this.r);
+        this.camera.lookAt(0,2,0);
 
-        // let r = 15;
-        // this.camera.position.set(Math.sin(this.time * 0.5) * r,2,Math.cos(this.time * 0.5) * r);
-        this.camera.position.set(0,0,-15);
-        this.camera.lookAt(0,0,0);
+        this.floor.update();
+        this.back.update(this.time);
+        this.customPass.uniforms.time.value = this.time;
 
-        this.voxel.update();
-
-        // this.composer.render();
-        this.renderer.render(this.scene,this.camera);
+        if(this.cake){
+            this.cake.position.y = Math.abs(Math.sin(this.time * 8.0));
+        }
+        this.composer.render();
+        // this.renderer.render(this.scene,this.camera);
     }
 
-    Resize(width,height){
-        this.camera.aspect = width / height;
+    Resize(){
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        let aspect = width / height;
+        this.camera.aspect = aspect;
         this.camera.updateProjectionMatrix();
-    }
 
-    movePointer(cursor){
-        var halfWidth = innerWidth / 2;
-        var halfHeight = innerHeight / 2;
-        var pos = new THREE.Vector2((cursor.x - halfWidth) / halfWidth, (cursor.y - halfHeight) / halfHeight);
-        
-        pos.y *= -1;
-
-        this.raycaster.setFromCamera(pos, this.camera); 
-        var intersects = this.raycaster.intersectObjects([this.plane]);
-        if(intersects.length > 0){
-            var point = intersects[0].point;   
-            this.pointer.copy(point);
+        if(aspect > 1){
+            this.r = 15;
+        }else{
+            this.r = 20;
+        }
+        if(this.back){
+            this.back.setAspect(aspect);
         }
     }
     
-    onTouchStart(c){
-        this.movePointer(c);
-        this.voxel.setPoint(this.pointer);
+    onTouchStart(){
     }
 
-    onTouchMove(c){
-        this.movePointer(c);
-        this.voxel.setPoint(this.pointer);
+    onTouchMove(){
     }
 
     onTouchEnd(){
-        this.pointer.set(0,0,0);
-        this.voxel.setPoint(this.pointer);
+
     }
 
 }
