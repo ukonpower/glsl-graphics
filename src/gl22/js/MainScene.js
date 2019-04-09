@@ -1,5 +1,5 @@
 import {BaseScene} from './utils/ore-three/';
-import Voxel from './utils/InstancingBox';
+import Voxel from './utils/Voxel';
 
 export default class MainScene extends BaseScene {
     constructor(renderer) {
@@ -8,7 +8,7 @@ export default class MainScene extends BaseScene {
     }
 
     init() {
-        this.camera.position.set(0,1.5,8);
+        this.camera.position.set(0,1.5,5);
         this.camera.lookAt(0,0,0);
 
         this.light = new THREE.DirectionalLight();
@@ -20,13 +20,13 @@ export default class MainScene extends BaseScene {
         this.alight.position.y = 10;
         this.scene.add(this.alight);
 
-        this.voxel = new Voxel(1000);
+        this.voxel = new Voxel(this.renderer,1,10);
         this.scene.add(this.voxel.obj);
         window.scene = this.scene;
     }
 
     animate() {
-        this.voxel.obj.rotateY(0.01);
+        this.voxel.obj.rotateY(0.05);
         this.voxel.update();
         this.renderer.render(this.scene,this.camera);
     }
