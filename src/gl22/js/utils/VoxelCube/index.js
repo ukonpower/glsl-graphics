@@ -1,19 +1,20 @@
-import vert from './shaders/voxel.vs';
+import vert from './shaders/voxelCube.vs';
 
 export default class InstansingBox {
-    constructor(num) {
-        this.num = num;
-        this.space = 1.5;
+    constructor(size, res) {
+        this.size = size;
+        this.res = res;
+        this.num = Math.pow(this.res, 3);
 
         this.obj;
         this.time = 0;
-        this.clock = new THREE.Clock();
 
         this.createVoxel();
     }
 
     createVoxel() {
-        let originBox = new THREE.BoxBufferGeometry(0.3,0.3,0.3);
+        let s = this.size / (this.res - 1);
+        let originBox = new THREE.BoxBufferGeometry(s,s,s);
         let geo = new THREE.InstancedBufferGeometry();
 
         let vertice = originBox.attributes.position.clone();
@@ -27,17 +28,19 @@ export default class InstansingBox {
 
         let indices = originBox.index.clone();
         geo.setIndex(indices);
- 
+
         let offsetPos = new THREE.InstancedBufferAttribute(new Float32Array(this.num * 3), 3, false, );
         let num = new THREE.InstancedBufferAttribute(new Float32Array(this.num * 1), 1, false, 1);
 
+
+        this.space = this.size / this.res;
         for (let i = 0; i < this.num; i++) {
-            let range = 5;
-            let x = Math.random() * range - range / 2;
-            let y = Math.random() * range - range / 2;
-            let z = Math.random() * range - range / 2;
-            offsetPos.setXYZ(i,x,y,z);
-            num.setX(i,i);
+            let x = this.space * (i % (this.res)) - this.size / 2;
+            let y = this.space * (Math.floor(i / (this.res)) % this.res) - this.size / 2;
+            let z = this.space * Math.floor(i / (this.res * this.res)) - this.size / 2;
+
+            offsetPos.setXYZ(i, x, y, z);
+            num.setX(i, i);
         }
 
         geo.addAttribute('offsetPos', offsetPos);
@@ -49,8 +52,8 @@ export default class InstansingBox {
             }
         }
 
-        this.uni = THREE.UniformsUtils.merge([THREE.ShaderLib.standard.uniforms,cUni]);
-        this.uni.diffuse.value = new THREE.Vector3(1.0,1.0,1.0);
+        this.uni = THREE.UniformsUtils.merge([THREE.ShaderLib.standard.uniforms, cUni]);
+        this.uni.diffuse.value = new THREE.Vector3(1.0, 1.0, 1.0);
         this.uni.roughness.value = 0.1;
 
         let mat = new THREE.ShaderMaterial({
@@ -64,8 +67,8 @@ export default class InstansingBox {
         this.obj = new THREE.Mesh(geo, mat);
     }
 
-    update() {
-        this.time += this.clock.getDelta();
+    update(deltaTime) {
+        this.time += deltaTime;
         this.uni.time.value = this.time;
     }
 }

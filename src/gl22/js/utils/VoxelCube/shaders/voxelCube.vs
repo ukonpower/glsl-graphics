@@ -10,10 +10,7 @@ highp mat2 rotate(float rad){
 
 void main() {
     vec3 pos = position;
-    float s = max(0.0,sin(-time * 4.0 + length(offsetPos)));
-    pos *= s;
-    pos.xz *= rotate(s * 4.0);
-    pos.xy *= rotate(s * 4.0);
+    float s = 1.0;
     vec4 mvPosition = modelViewMatrix * vec4(pos + offsetPos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
     vViewPosition = -mvPosition.xyz;
