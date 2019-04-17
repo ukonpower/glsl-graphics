@@ -1,4 +1,5 @@
 import vert from './shaders/voxelCube.vs';
+    import frag from './shaders/voxelCube.fs';
 
 export default class InstansingBox {
     constructor(size, res) {
@@ -35,9 +36,9 @@ export default class InstansingBox {
 
         this.space = this.size / this.res;
         for (let i = 0; i < this.num; i++) {
-            let x = this.space * (i % (this.res)) - this.size / 2;
-            let y = this.space * (Math.floor(i / (this.res)) % this.res) - this.size / 2;
-            let z = this.space * Math.floor(i / (this.res * this.res)) - this.size / 2;
+            let x = this.space * (i % (this.res)) - this.size / 2 + this.space / 2;
+            let y = this.space * (Math.floor(i / (this.res)) % this.res) - this.size / 2 + this.space / 2;
+            let z = this.space * Math.floor(i / (this.res * this.res)) - this.size / 2 + this.space / 2;
 
             offsetPos.setXYZ(i, x, y, z);
             num.setX(i, i);
@@ -54,11 +55,11 @@ export default class InstansingBox {
 
         this.uni = THREE.UniformsUtils.merge([THREE.ShaderLib.standard.uniforms, cUni]);
         this.uni.diffuse.value = new THREE.Vector3(1.0, 1.0, 1.0);
-        this.uni.roughness.value = 0.1;
-
+        this.uni.roughness.value = 0.7;
+        
         let mat = new THREE.ShaderMaterial({
             vertexShader: vert,
-            fragmentShader: THREE.ShaderLib.standard.fragmentShader,
+            fragmentShader: frag,
             uniforms: this.uni,
             flatShading: true,
             lights: true

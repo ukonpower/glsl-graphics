@@ -14,11 +14,12 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.(frag|vert|glsl|vs|fs)$/,
-                use: [{
-                    loader: 'glsl-shader-loader',
-                    options: {}
-                }]
+                test: /\.(glsl|vs|fs)$/,
+                loader: 'shader-loader',
+                options: {
+                    glsl: {
+                    }
+                }
             }
         ]
     }

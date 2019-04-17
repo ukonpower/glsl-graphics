@@ -1,5 +1,5 @@
-import Cursor from './Cursor';
 import * as THREE from 'three';
+import Cursor from './Cursor';
 
 window.THREE = THREE;
 
@@ -88,10 +88,12 @@ export class BaseScene {
         this.clock = new THREE.Clock();
         this.camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 1000);
         this.time = 0;
+        this.deltaTime;
     }
 
     tick(){
-        this.time += this.clock.getDelta();
+        this.deltaTime = this.clock.getDelta();
+        this.time += this.deltaTime;
         this.animate();
     }
 
@@ -110,11 +112,5 @@ export class BaseScene {
 
 
 /*------------------------------------------------------------------------------------
-    ARController
+    PostProcessing
 ------------------------------------------------------------------------------------*/
-
-export class ARController{
-    constructor(){
-
-    }
-}

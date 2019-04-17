@@ -16,10 +16,12 @@ const options = minimist(process.argv.slice(2), {
         P: false,
     }
 });
+
+const srcBase = './src/gl' + options.gl + "/";
   
 gulp.task("webpack", () => {
     let conf = webpackConfig;
-    conf.entry.main = './src/gl' + options.gl + '/js/main.js';
+    conf.entry.main = srcBase + '/js/main.js';
     conf.output.filename = 'main.js';
 
     if(options.P){
@@ -47,7 +49,7 @@ gulp.task("sass", () => {
 
 gulp.task('copy', (c) => {
     gulp.src(['./src/html/**/*']).pipe(gulp.dest('./public/gl/'));
-    gulp.src(['./src/assets/**/*']).pipe(gulp.dest('./public/gl/assets/'));
+    gulp.src([srcBase + 'assets/**/*']).pipe(gulp.dest('./public/gl/assets/'));
     c();
 });
 
@@ -74,9 +76,9 @@ gulp.task('clean', (c) => {
 });
 
 gulp.task('watch', () => {
-    gulp.watch('./src/js/**/*', gulp.series('webpack'));
-    gulp.watch('./src/scss/*.scss', gulp.task('sass'));
-    gulp.watch('./src/**/*', gulp.task('copy'));
+    gulp.watch(srcBase + 'js/**/*', gulp.series('webpack'));
+    gulp.watch(srcBase + 'scss/*.scss', gulp.task('sass'));
+    gulp.watch(srcBase + '**/*', gulp.task('copy'));
 });
 
 gulp.task('default', gulp.series(

@@ -1,5 +1,6 @@
 import {BaseScene} from './utils/ore-three/';
-import CubeBox from './utils/VoxelCube';
+import CubeBox from './utils/voxel-cube';
+import PostProcessing from './utils/post-processing';
 
 export default class MainScene extends BaseScene {
     constructor(renderer) {
@@ -14,23 +15,31 @@ export default class MainScene extends BaseScene {
         this.light = new THREE.DirectionalLight();
         this.light.position.y = 10;
         this.light.position.z = 5;
-        this.light.intensity = 1.5;
+        this.light.intensity = 2.5;
         this.scene.add(this.light);
 
         this.alight = new THREE.AmbientLight();
-        this.alight.intensity = 0.5;
+        this.alight.intensity = 1.5;
         this.alight.position.y = 10;
         this.scene.add(this.alight);
 
-        this.voxel = new CubeBox(2,5);
+        this.pLight = new THREE.PointLight();
+        this.pLight.position.set(0,0,-3);
+        this.pLight.intensity = 0;
+        this.scene.add(this.pLight);
+
+        this.voxel = new CubeBox(4,22);
         this.scene.add(this.voxel.obj);
+
+        this.pp = new PostProcessing(this.renderer,this.scene,this.camera);
         window.scene = this.scene;
     }
 
     animate() {
         this.voxel.obj.rotateY(0.01);
-        this.voxel.update();
-        this.renderer.render(this.scene,this.camera);
+        this.voxel.update(this.deltaTime);
+        this.pp.render();
+        // this.renderer.render(this.scene,this.camera);
     }
 
     Resize(width,height){
