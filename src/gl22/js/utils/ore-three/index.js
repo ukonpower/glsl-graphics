@@ -14,7 +14,7 @@ export class Controller {
 
         this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas});
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(1);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
 
         this.pageScroll = false;
         this.cursor = new Cursor();
@@ -38,6 +38,7 @@ export class Controller {
     setScene(scene) {
         console.log('setScene');
         this.currentScene = scene;
+        this.onWindowResize();
     }
 
     onWindowResize() {

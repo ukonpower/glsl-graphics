@@ -77,7 +77,7 @@ gulp.task('clean', (c) => {
 
 gulp.task('watch', () => {
     gulp.watch(srcBase + 'js/**/*', gulp.series('webpack'));
-    gulp.watch(srcBase + 'scss/*.scss', gulp.task('sass'));
+    gulp.watch('./src/scss/*.scss', gulp.task('sass'));
     gulp.watch(srcBase + '**/*', gulp.task('copy'));
 });
 

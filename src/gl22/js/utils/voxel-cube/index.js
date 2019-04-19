@@ -1,5 +1,5 @@
 import vert from './shaders/voxelCube.vs';
-    import frag from './shaders/voxelCube.fs';
+import frag from './shaders/voxelCube.fs';
 
 export default class InstansingBox {
     constructor(size, res) {
@@ -15,7 +15,7 @@ export default class InstansingBox {
 
     createVoxel() {
         let s = this.size / (this.res - 1);
-        let originBox = new THREE.BoxBufferGeometry(s,s,s);
+        let originBox = new THREE.BoxBufferGeometry(s, s, s);
         let geo = new THREE.InstancedBufferGeometry();
 
         let vertice = originBox.attributes.position.clone();
@@ -50,13 +50,16 @@ export default class InstansingBox {
         let cUni = {
             time: {
                 value: 0
+            },
+            scroll: {
+                value: 0.0
             }
         }
 
         this.uni = THREE.UniformsUtils.merge([THREE.ShaderLib.standard.uniforms, cUni]);
         this.uni.diffuse.value = new THREE.Vector3(1.0, 1.0, 1.0);
         this.uni.roughness.value = 0.7;
-        
+
         let mat = new THREE.ShaderMaterial({
             vertexShader: vert,
             fragmentShader: frag,
@@ -68,8 +71,9 @@ export default class InstansingBox {
         this.obj = new THREE.Mesh(geo, mat);
     }
 
-    update(deltaTime) {
+    update(deltaTime, scroll) {
         this.time += deltaTime;
         this.uni.time.value = this.time;
+        this.uni.scroll.value = scroll;
     }
 }
