@@ -50,9 +50,6 @@ export default class InstansingBox {
         let cUni = {
             time: {
                 value: 0
-            },
-            scroll: {
-                value: 0.0
             }
         }
 
@@ -71,9 +68,8 @@ export default class InstansingBox {
         this.obj = new THREE.Mesh(geo, mat);
     }
 
-    update(deltaTime, scroll) {
+    update(deltaTime) {
         this.time += deltaTime;
         this.uni.time.value = this.time;
-        this.uni.scroll.value = scroll;
     }
 }

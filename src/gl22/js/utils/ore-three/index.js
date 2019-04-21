@@ -14,7 +14,7 @@ export class Controller {
 
         this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas});
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setPixelRatio(1);
 
         this.pageScroll = false;
         this.cursor = new Cursor();

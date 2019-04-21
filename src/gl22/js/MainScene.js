@@ -1,6 +1,7 @@
 import {BaseScene} from './utils/ore-three/';
 import CubeBox from './utils/voxel-cube';
 import PostProcessing from './utils/post-processing';
+import * as THREE from 'three';
 
 export default class MainScene extends BaseScene {
     constructor(renderer) {
@@ -12,7 +13,7 @@ export default class MainScene extends BaseScene {
         this.camera.position.set(0,2,8);
         this.camera.lookAt(0,0,0);
 
-        this.scroll = 0.0;
+        this.scroll = new THREE.Vector2(0,0);
 
         this.light = new THREE.DirectionalLight();
         this.light.position.y = 10;
@@ -38,10 +39,16 @@ export default class MainScene extends BaseScene {
     }
 
     animate() {
-        this.scroll *= 0.95;
-        this.voxel.obj.rotateY(0.01);
-        this.voxel.obj.rotateY(this.scroll);
-        this.voxel.update(this.deltaTime,this.scroll);
+        this.scroll.x *= 0.96;
+        this.scroll.y *= 0.96;
+
+        let q = new THREE.Quaternion();  
+        let axis = new THREE.Vector3(this.scroll.y, this.scroll.x, 0.0).normalize();
+        q.setFromAxisAngle(axis, this.scroll.length());
+        q.multiply(this.voxel.obj.quaternion);
+        q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),0.005).multiply(q);  
+        this.voxel.obj.quaternion.copy(q);
+        this.voxel.update(this.deltaTime);
         this.pp.render();
         // this.renderer.render(this.scene,this.camera);
     }
@@ -58,16 +65,21 @@ export default class MainScene extends BaseScene {
         this.camera.lookAt(0,0,0);
     }
     
+    addScroll(c){
+        this.scroll.x += c.deltaX * 0.001;
+        this.scroll.y += c.deltaY * 0.001;
+    }
+
     onTouchStart(c){
-        this.scroll = c.deltaX * 0.005;
+        this.addScroll(c);
     }
 
     onTouchMove(c){
-        this.scroll = c.deltaX * 0.005;
+        this.addScroll(c);
     }
 
     onTouchEnd(c){
-        this.scroll = c.deltaX * 0.005;
+        this.addScroll(c);
     }
 
 }
