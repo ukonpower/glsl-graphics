@@ -43,7 +43,7 @@ export default class MainScene extends BaseScene {
 
         let loader = new THREE.GLTFLoader();
 
-        loader.load('./models/ramen.glb', (gltf) => {
+        loader.load('./assets/models/ramen.glb', (gltf) => {
             var object = gltf.scene;
             object.traverse((child) => {
                 if (child.isMesh) {
