@@ -42,7 +42,10 @@ gulp.task('pug', () => {
     return gulp.src(['./src/pug/**/*.pug', '!./src/pug/**/_*.pug'])
         .pipe(plumber())
         .pipe(pug({
-            pretty: true
+            pretty: true,
+            locals: {
+                title: 'gl' + options.gl,
+            }
         }))
         .pipe(gulp.dest('./public/gl/'));
 });
