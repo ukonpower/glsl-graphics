@@ -39,7 +39,7 @@ gulp.task("webpack", () => {
 });
 
 gulp.task('pug', () => {
-    return gulp.src(['./src/pug/**/*.pug', '!./src/pug/**/_*.pug'])
+    return gulp.src([srcBase + 'pug/**/*.pug', srcBase + 'pug/**/_*.pug'])
         .pipe(plumber())
         .pipe(pug({
             pretty: true,
@@ -95,7 +95,7 @@ gulp.task('clean', (c) => {
 gulp.task('watch', () => {
     gulp.watch(srcBase + 'js/**/*', gulp.series('webpack'));
     gulp.watch('./src/scss/*.scss', gulp.task('sass'));
-    gulp.watch('./src/pug/**/*.pug', gulp.task('pug'));
+    gulp.watch(srcBase + '/pug/**/*.pug', gulp.task('pug'));
     gulp.watch(srcBase + '**/*', gulp.task('copy'));
 });
 
