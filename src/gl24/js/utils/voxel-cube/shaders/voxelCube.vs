@@ -13,7 +13,7 @@ $noise4D
 void main() {
   vec3 pos = position;
   vec3 p = offsetPos;
-  float n = (snoise(vec4(p * 0.4, time * 0.5)) + 1.0) / 1.5;
+  float n = (snoise(vec4(p * 0.8, time * 0.5)) + 1.0) / 1.5;
   float s = 1.0 - n * smoothstep(0.0, .2, (cos(time * 0.5) - 1.0) / -2.0);
   s = smoothstep(0.0, 0.4, s);
 
@@ -27,7 +27,6 @@ void main() {
   gl_Position = projectionMatrix * mvPosition;
   vViewPosition = -mvPosition.xyz;
 
-  vColor = vec3(1.0 - s, 0.0, 0.0);
-  vColor += (sin(floor(length(p * 3.0)) - time * 10.0) + 1.0) / 2.0 * 0.2;
-  vColor += smoothstep(1.0, 0.0, length(p) * 0.6) * vec3(2.0, 0.2, 0.9);
+  vColor = vec3(1.5, 0.0, 0.6);
+  vColor += smoothstep(0.6, 0.0, length(p) * 0.6) * vec3(0.9, 0.6, 1.0);
 }

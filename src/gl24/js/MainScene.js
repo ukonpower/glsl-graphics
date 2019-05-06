@@ -39,7 +39,7 @@ export default class MainScene extends BaseScene {
         this.ring = new Ring();
         this.scene.add(this.ring.obj);
 
-        this.cube = new Cube(1.5,5);
+        this.cube = new Cube(1.2,10);
         this.scene.add(this.cube.obj);
 
         this.background = new Background();
