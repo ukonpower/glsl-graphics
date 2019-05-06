@@ -1,4 +1,7 @@
 import path from 'path';
+
+console.log(path.resolve(__dirname,"/src/glsl-chunks/"));
+
 module.exports = {
     mode: '',
     entry: {
@@ -18,6 +21,7 @@ module.exports = {
                 loader: 'shader-loader',
                 options: {
                     glsl: {
+                        chunkPath: "./src/glsl-chunks/"
                     }
                 }
             }
