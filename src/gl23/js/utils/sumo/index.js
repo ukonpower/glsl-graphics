@@ -1,12 +1,12 @@
-import vert from './shaders/othello.vs';
-import frag from './shaders/othello.fs';
+import vert from './shaders/sumo.vs';
+import frag from './shaders/sumo.fs';
 import * as THREE from 'three';
 
-export default class InstansingBox {
+export default class Sumo {
     constructor() {
-        this.res = 99;
+        this.res = 30;
         this.num = this.res * this.res;
-        this.size = 50;
+        this.size = 2;
 
         this.obj;
         this.time = 0;
@@ -15,8 +15,9 @@ export default class InstansingBox {
     }
 
     createVoxel() {
-        let s = this.size / (this.res) * 0.3;
-        let originBox = new THREE.CylinderBufferGeometry(s,s,0.1,10,20);
+        let s = this.size / this.res / 2 * 1;
+        let originBox = new THREE.CylinderBufferGeometry(s,s,2, 10,30);
+        // let originBox = new THREE.SphereBufferGeometry(s,20,10,10);
         let geo = new THREE.InstancedBufferGeometry();
 
         let vertice = originBox.attributes.position.clone();

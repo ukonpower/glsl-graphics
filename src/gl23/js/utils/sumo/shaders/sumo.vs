@@ -1,4 +1,5 @@
 attribute vec3 offsetPos;
+attribute float num;
 varying vec3 vViewPosition;
 varying vec3 vColor;
 uniform float time;
@@ -125,23 +126,40 @@ float snoise(vec4 v) {
                  dot(m1 * m1, vec2(dot(p3, x3), dot(p4, x4))));
 }
 
+highp float atan2(in float y, in float x) {
+  return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
+}
+
 void main() {
-  vec3 pos = position;
-  vec3 p = offsetPos;
-  float n = (snoise(vec4(p * 1.4, time * 0.5)) + 1.0) / 2.0 * 0.5;
-  n += (snoise(vec4(p * 0.4, time * 0.5)) + 1.0) / 2.0;
-  float s = 1.0;
+  vec3 vp = position;
+  vec3 wp = offsetPos;
+  vec3 s;
+  float t = time * 0.81;
 
-  float rot = (cos(-time * 2. + (length(p)) * 1.2) + 1.0) / 2.0 * PI;
+  // size
+  s = vec3(sqrt(1.0 - wp.x * wp.x));
+  s *= sqrt(1.0 - wp.z * wp.z);
+  s *= 1.0 - smoothstep(0.999, 1.0, length(wp.xz));
 
-  vec3 npos = normalize(p);
-  pos.zy *= rotate(rot * 0.1);
-  pos.xz *= rotate(rot);
+  s.y += 1.0 * (sin(t * 1.0 - PI / 2.0) + 1.0) / 2.0 * 2.0;
 
-  vec4 mvPosition = modelViewMatrix * vec4(pos + p, 1.0);
+  vp *= s;
+
+  // rot
+  vp.yz *= rotate(max(0.0, vp.y) * length(wp.xz) *
+                  (sin(t * 1.0 - PI / 2.0) + 1.0) / 2.0 * 1.4);
+  float r = -atan2(wp.z, wp.x) - (PI / 2.0);
+  vp.xz *= rotate(r);
+  vp.xz *= rotate(length(vp.xz));
+
+  vec4 mvPosition = modelViewMatrix * vec4(vp, 1.0);
   gl_Position = projectionMatrix * mvPosition;
   vViewPosition = -mvPosition.xyz;
 
-  vec3 c = vec3(0.7);
+  vec3 c = vec3(0.5);
+  float w = smoothstep(1.0, 0.2, (sin(PI / 2.0 + t) + 1.0) / 2.0);
+  c.x += smoothstep(0.9, 0.0, length(position.y)) * 1.0 * 10.0;
+  c.y += smoothstep(0.9, 1.0, (position.y)) * w * 10.0;
+
   vColor = c;
 }

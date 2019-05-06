@@ -1,5 +1,5 @@
 import {BaseScene} from './utils/ore-three/';
-import Othello from './utils/othello';
+import Sumo from './utils/sumo';
 import PostProcessing from './utils/post-processing';
 
 export default class MainScene extends BaseScene {
@@ -9,27 +9,32 @@ export default class MainScene extends BaseScene {
     }
 
     init() {
-        this.camera.position.set(0,5,8);
+        this.camera.position.set(0,1.5,8);
         this.camera.lookAt(0,0,0);
 
         this.scroll = new THREE.Vector2(0,0);
         this.light = new THREE.DirectionalLight();
         this.light.position.y = 10;
         this.light.position.z = 5;
-        this.light.intensity = 1.0;
+        this.light.intensity = 0.5;
         this.scene.add(this.light);
 
         this.alight = new THREE.AmbientLight();
-        this.alight.intensity = 0.5;
+        this.alight.intensity = 0.2;
         this.alight.position.y = 10;
         this.scene.add(this.alight);
 
-        this.pLight = new THREE.PointLight();
-        this.pLight.position.set(0,0,-3);
-        this.pLight.intensity = 1.0;
-        this.scene.add(this.pLight);
+        // this.pLight = new THREE.PointLight(0xff00ff);
+        // this.pLight.position.set(0,5,0);
+        // this.pLight.intensity = 2.0;
+        // this.scene.add(this.pLight);
 
-        this.othello = new Othello();
+        // this.pl2 = new THREE.PointLight(0x00ffff);
+        // this.pl2.position.set(0,-5,0);
+        // this.pl2.intensity = 2.0;
+        // this.scene.add(this.pl2);
+
+        this.othello = new Sumo();
         this.scene.add(this.othello.obj);
 
         this.pp = new PostProcessing(this.renderer,this.scene,this.camera);
@@ -58,7 +63,7 @@ export default class MainScene extends BaseScene {
         if(aspect > 1.0){
             this.camera.position.z = 8;
         }else{
-            this.camera.position.z = 13;
+            this.camera.position.z = 12;
         }
         this.camera.lookAt(0,0,0);
     }
