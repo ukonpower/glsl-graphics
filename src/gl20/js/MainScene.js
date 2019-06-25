@@ -1,6 +1,5 @@
 import BaseScene from './utils/BaseScene';
 import Voxel from './utils/Voxel/Voxel';
-import Floor from './utils/Floor/Floor';
 
 import ppVert from './shaders/pp.vs';
 import ppFrag from './shaders/pp.fs';
