@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "matrixgl": "^1.0.1",
-    "three": "^0.100.0",
+    "three": "^0.125.0",
     "three-effectcomposer-es6": "0.0.4",
     "three-gltf2-loader": "^1.2.0"
   },
